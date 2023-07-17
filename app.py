@@ -15,8 +15,12 @@ error_obj = {}
 error_obj['msg'] = 'Internal Server Error'
 error_obj['code'] = 500
 
+def generateUUID():
+    return uuid.uuid4().hex
+
+
 class FileUploads(db.Model):
-    id = db.Column('file_id', db.Integer, primary_key = True)
+    id = db.Column('file_id', generateUUID(), primary_key = True)
     filename = db.Column(db.String(100))
     object_url = db.Column(db.String(2000))
     user_id = db.Column(db.String(200))
@@ -29,6 +33,44 @@ def __init__(self, filename, object_url, user_id, key, date):
     self.user_id = user_id
     self.key = key
     self.date = date
+
+class Shots(db.Model):
+    id = db.Column('shot_id', generateUUID(), primary_key = True)
+    video_object_url = db.Column(db.String(2000))
+    thumbnail_object_url = db.Column(db.String(2000))
+    user_id = db.Column(db.String(200))
+    description = db.Column(db.String(10000))
+    title = db.Column(db.String(10))
+    is_private = db.Column(db.String(10))
+    comments = db.Column(db.String(10000))
+    shared = db.Column(db.String(10000))
+    views = db.Column(db.String(10000))
+    date_added = db.Column(db.String(10))
+    date_updated = db.Column(db.String(10))
+
+def __init__(self, 
+             video_object_url, 
+             thumbnail_object_url,
+               user_id, 
+               description, 
+               title,
+               is_private,
+               comments,
+               shared,
+               views,
+               date_added,
+               date_updated):
+    self.video_object_url = video_object_url
+    self.thumbnail_object_url = thumbnail_object_url
+    self.user_id = user_id
+    self.description = description
+    self.title = title
+    self.is_private = is_private
+    self.comments = comments
+    self.shared = shared
+    self.views = views
+    self.date_added = date_added
+    self.date_updated = date_updated
 
 @app.route("/api/v1/uploadVideo", methods=["POST"])
 def uploadVideo():
@@ -81,9 +123,6 @@ def uploadImage():
     #s3.Object(bucket, key).put(Body=json.dumps(image_file.read()))
 
     return "Image uploaded successfully!"
-
-def generateUUID():
-    return uuid.uuid4().hex
 
 
 if __name__ == "__main__":
