@@ -77,7 +77,7 @@ class Shots(db.Model):
         self.views = views
         self.date_added = date_added
         self.date_updated = date_updated
-        self.tatal_views = total_views
+        self.total_views = total_views
 
     def to_json(self):
         data = {}
@@ -91,7 +91,7 @@ class Shots(db.Model):
         data["comments"] =  self.comments
         data["shared"] = self.shared
         data["views"] =  self.views
-        data["tatal_views"] =  self.tatal_views
+        data["total_views"] =  self.total_views
         data["date_added"]=  self.date_added
         data["date_updated"] =  self.date_updated
         # return {
@@ -183,18 +183,16 @@ def addShot():
             is_private = is_private,
             comments = {'comments_mutual':[],'comments':[]},
             shared = {'shared_mutual':[],'shared':[]},
-            views = 0,
+            views = {'views_mutual':[],'views':[]},
+            total_views= 0,
             date_added = datetime.datetime.now(),
             date_updated = datetime.datetime.now(),
         )
         db.session.add(add_shot)
         db.session.commit()
         log.info('Shot added to DB')
-        log.info('Preparing Response...')
-        log.info('Fetching saved data from DB')
-        latest = Shots.query.filter_by(user_id = user_id).first()
         response = {}
-        response['data'] = [obj.to_json() for obj in latest]
+        response['data'] = "Shot added"
         return jsonify(response), 201
     except Exception as error:
         print(error)
@@ -213,7 +211,6 @@ def getAllShots(user_id):
         print(error)
         log.info('Exception occured: ',error)
         error_obj['msg'] ="404 Not Found"
-        response['status'] = 404
         return  jsonify(error_obj), 404
 
 

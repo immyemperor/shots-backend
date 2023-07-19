@@ -1,0 +1,2 @@
+1. run SSH
+ssh -i "success-shots.pem" ubuntu@ec2-3-108-42-98.ap-south-1.compute.amazonaws.com
